@@ -38,30 +38,6 @@ reset:
   jmp loop
 .initsuccess
 
-  ; Make a dummy file.
-  ; it should count from 0-255.
-  ldy #0
-.fileloop
-  tya
-  sta buffer,y
-  iny
-  bne .fileloop
-
-  ; Allocating
-  lda #'a'
-  jsr print_char
-
-  ; Set file size to one page, and push it as we will be clobbering it when we load the directory
-  lda #0
-  sta fat32_bytesremaining
-  pha
-  lda #$01
-  sta fat32_bytesremaining+1
-  pha
-
-  ; Allocate space for the file
-  jsr fat32_allocatefile
-
   ; Opening Directory
   lda #'o'
   jsr print_char
@@ -85,8 +61,46 @@ reset:
   ; Open subdirectory
   jsr fat32_opendirent
 
+  lda #'c'
+  jsr print_char
+
+  ; Check if the file exists
+  ldx #<filename
+  ldy #>filename
+  jsr fat32_finddirent
+  bcs .write
+
+  lda #'D'
+  jsr print_char
+
+  ; It already exists, delete it.
+  jsr fat32_deletefile
+
+.write
+
+  ; Allocating
+  lda #'a'
+  jsr print_char
+
+  ; Size of example message
+  lda #<(textend-text)
+  sta fat32_bytesremaining
+  pha
+  lda #>(textend-text)
+  sta fat32_bytesremaining+1
+  pha
+
+  ; Allocate space for the file
+  jsr fat32_allocatefile
+
+  ; Re-opening folder sector
+  lda #'r'
+  jsr print_char 
+
+  jsr fat32_open_cd
+
   ; Writing dirent
-  lda #'w'
+  lda #'d'
   jsr print_char
 
   ; Restore filesize
@@ -95,7 +109,7 @@ reset:
   pla
   sta fat32_bytesremaining
 
-  ; Store filename ponter
+  ; Load filename ponter
   lda #<filename
   sta fat32_filenamepointer
   lda #>filename
@@ -104,15 +118,16 @@ reset:
   ; Write the directory entry
   jsr fat32_writedirent
 
-  ; Data
-  lda #'d'
+  ; Writing Data
+  lda #'w'
   jsr print_char
 
   ; Now write the file data
-  lda #<buffer
+  lda #<text
   sta fat32_address
-  lda #>buffer
+  lda #>text
   sta fat32_address+1
+
   jsr fat32_file_write
 
   ; Done!
@@ -123,6 +138,10 @@ reset:
 loop:
   jmp loop
 
+text:
+  .asciiz "Hello World!",$0d,$0a,"This is text saved from a 6502 computer to an SD Card!",$0d,$0a,$00
+textend:
+  .byte $00
 
   .org $fffc
   .word reset
