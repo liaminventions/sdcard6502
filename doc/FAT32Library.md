@@ -18,13 +18,12 @@ It also initializes things, then searches the root directory for a folder called
 it then checks to see if a file "SAVETEST.txt" exists, 
 if it does, then it deletes it.
 after that, it creates a new "SAVETEST.txt",
-and then it writes 
+and then it writes this dummy text to it:
 ```
 Hello World!
 This is text saved from a 6502 computer to an SD Card!
 
-```
-to it.  
+```  
 
 
 This covers most things you'd need to do - of the APIs provided, it just skips
