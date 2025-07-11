@@ -23,7 +23,6 @@ fat32_numfats			          = zp_fat32_variables + $26  ; 1 byte
 fat32_filecluster		        = zp_fat32_variables + $27  ; 4 bytes
 fat32_sectorsperfat		      = zp_fat32_variables + $2b  ; 4 bytes
 fat32_cdcluster             = zp_fat32_variables + $2f  ; 4 bytes
-fat32_buffer_index          = zp_fat32_variables + $33  ; 1 byte
 
 fat32_errorstage            = fat32_bytesremaining  ; only used during initialization
 
