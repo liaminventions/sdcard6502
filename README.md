@@ -1,9 +1,9 @@
-# How to read and write SD cards with a 6502, step by step
+# How to use SD cards with a 6502, step by step
 
 <img src="img/sdcardreader6502.jpg" title="SD card reader in a circuit">
 
 This guide shows how to connect up an SD card reader to a Ben Eater style 6502
-homebrew computer and use it to read/write data from SDHC cards.
+homebrew computer and use it to read/write data on SDHC cards.
 
 The tutorial ends with being able to read arbitrary sectors from the SDHC card.
 Beyond that, I've included library-style code that can read/write from a FAT32 filesystem,
