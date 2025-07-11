@@ -401,13 +401,13 @@ fat32_seekcluster:
   ; Save raw value for EOC check
   ;lda fat32_nextcluster+3
   cmp #$0F  
-  bcc notendofchain
+  bcc .notendofchain
   lda fat32_nextcluster+2
   cmp #$FF
-  bne notendofchain
+  bne .notendofchain
   lda fat32_nextcluster+1
   cmp #$FF
-  bne notendofchain
+  bne .notendofchain
   lda fat32_nextcluster
   cmp #$F8
   bcc .notendofchain
@@ -417,10 +417,9 @@ fat32_seekcluster:
   sta fat32_nextcluster+3
   sec 
   rts
-notendofchain:
+.notendofchain:
   clc 
   rts
-.)
 
 
 fat32_readnextsector:
@@ -438,20 +437,20 @@ fat32_readnextsector:
   ; No pending sectors, check for end of cluster chain
   lda fat32_nextcluster+3
   cmp #$0F
-  bne not_eoc
+  bne .not_eoc
   lda fat32_nextcluster+2
   cmp #$FF
-  bne not_eoc
+  bne .not_eoc
   lda fat32_nextcluster+1
   cmp #$FF
-  bne not_eoc
+  bne .not_eoc
   lda fat32_nextcluster
   cmp #$F8     ; EOC starts at F8
-  bcc not_eoc
+  bcc .not_eoc
 
-  jmp endofchain
+  jmp .endofchain
 
-not_eoc:
+.not_eoc:
 
   ; Prepare to read the next cluster
   sec
